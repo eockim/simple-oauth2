@@ -1,4 +1,4 @@
-package com.example.simpleouath2;
+package com.example.simpleoauth2;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,4 +1,4 @@
-package com.example.simpleouath2.domain;
+package com.example.simpleoauth2.domain;
 
 import lombok.Data;
 

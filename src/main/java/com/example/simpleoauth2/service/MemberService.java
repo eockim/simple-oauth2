@@ -1,6 +1,6 @@
-package com.example.simpleouath2.service;
+package com.example.simpleoauth2.service;
 
-import com.example.simpleouath2.domain.Member;
+import com.example.simpleoauth2.domain.Member;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 

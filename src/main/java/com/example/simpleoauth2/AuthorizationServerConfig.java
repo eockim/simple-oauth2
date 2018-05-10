@@ -38,11 +38,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private AuthenticationManager authenticationManager;
 
     @Override
-    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-        super.configure(security);
-    }
-
-    @Override
     public void configure(ClientDetailsServiceConfigurer configurer) throws Exception {
 
 
@@ -50,10 +45,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .inMemory()
                 .withClient(CLIEN_ID)
                 //.authorizedGrantTypes(GRANT_TYPE, AUTHORIZATION_CODE, REFRESH_TOKEN )
-                .authorizedGrantTypes("client_credentials", "password" )
-                .authorities("ROLE_CLIENT")
-                .scopes(SCOPE_READ, SCOPE_WRITE, TRUST, "create")
-                .redirectUris("http://anywhere?key=value")
+                .authorizedGrantTypes("client_credentials", "password", "refresh_token" )
+                .authorities("ROLE_USER")
+                .scopes(SCOPE_READ, TRUST)
+                .redirectUris("http://localhost:8080/test?key=value")
                 .secret(CLIENT_SECRET)
                 .accessTokenValiditySeconds(ACCESS_TOKEN_VALIDITY_SECONDS);
 //                refreshTokenValiditySeconds(FREFRESH_TOKEN_VALIDITY_SECONDS);
@@ -61,7 +56,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints.tokenStore(tokenStore)
+        endpoints
+                .tokenStore(tokenStore)
                 .authenticationManager(authenticationManager);
     }
 
@@ -69,6 +65,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public TokenStore tokenStore(){
         return new InMemoryTokenStore();
     }
+
+
 
 
 }

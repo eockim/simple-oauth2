@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 @Configuration
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-    private static final String RESOURCE_ID = "cmi_resource";
+    private static final String RESOURCE_ID = "cmi";
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {

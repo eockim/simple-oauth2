@@ -28,20 +28,20 @@ public class OauthUserDetailService implements UserDetailsService {
     PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String username){
+    public UserDetails loadUserByUsername(String userName){
 
-        OauthUser oauthUser = oauthUserRepository.findByUsername(username);
+        OauthUser oauthUser = oauthUserRepository.findByUserName(userName);
         User.UserBuilder builder = null;
 
         if(oauthUser == null){
-            throw new UsernameNotFoundException(username);
+            throw new UsernameNotFoundException(userName);
         }
 
-        builder = User.withUsername(username);
+        builder = User.withUsername(userName);
         builder.password(oauthUser.getPassword());
         builder.roles("USER");
 
-        log.info("username {}", username);
+        log.info("username {}", userName);
 
         return builder.build();
     }

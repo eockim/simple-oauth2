@@ -1,6 +1,7 @@
 package com.example.simpleoauth2;
 
 import com.example.simpleoauth2.service.OauthUserDetailService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
+@Slf4j
 public class WebSecurityConfigure extends WebSecurityConfigurerAdapter {
 
 
@@ -46,6 +48,8 @@ public class WebSecurityConfigure extends WebSecurityConfigurerAdapter {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(oauthUserDetailService);
         authProvider.setPasswordEncoder(encoder());
+
+        log.info("encoder {}", encoder().encode("test"));
         return authProvider;
     }
 

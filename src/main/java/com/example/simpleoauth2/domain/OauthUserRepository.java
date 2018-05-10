@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface OauthUserRepository extends JpaRepository<OauthUser, Long> {
 
-    OauthUser findByUsername(String username);
+    OauthUser findByUserName(String userName);
 }

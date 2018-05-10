@@ -56,6 +56,6 @@ public class SimpleOuath2Application {
 
     public static void main(String[] args) {
         SpringApplication.run(SimpleOuath2Application.class, args);
-        System.out.println(passwordEncoder.encode("test"));
+        //System.out.println(passwordEncoder.encode("test"));
     }
 }

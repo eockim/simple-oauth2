@@ -75,8 +75,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         endpoints
                 .tokenStore(jdbcTokenStore)
                 .authorizationCodeServices(authorizationCodeServices())
-                .authenticationManager(authenticationManager)
-                .approvalStoreDisabled();
+                .authenticationManager(authenticationManager);
+                //.approvalStoreDisabled();
     }
 
 //    @Bean

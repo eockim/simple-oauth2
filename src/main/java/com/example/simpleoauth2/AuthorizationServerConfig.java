@@ -1,13 +1,11 @@
 package com.example.simpleoauth2;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -16,9 +14,11 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import javax.sql.DataSource;
 
@@ -38,6 +38,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     static final int ACCESS_TOKEN_VALIDITY_SECONDS = 1*60*60;
     static final int FREFRESH_TOKEN_VALIDITY_SECONDS = 6*60*60;
 
+    @Value("${access_token.validity_period:3600}")
+    int accessTokenValiditySeconds = 3600;
 
     @Autowired
     private DataSource dataSource;
@@ -73,8 +75,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
-                .tokenStore(jdbcTokenStore)
-                .authorizationCodeServices(authorizationCodeServices())
+                .tokenStore(tokenStore())
+                //.authorizationCodeServices(authorizationCodeServices())
+                .accessTokenConverter(jwtAccessTokenConverter())
                 .authenticationManager(authenticationManager);
                 //.approvalStoreDisabled();
     }
@@ -90,13 +93,44 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     }
 
     @Bean
+    public TokenStore tokenStore() {
+        return new JwtTokenStore(jwtAccessTokenConverter());
+    }
+
+    @Bean
+    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+
+        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        converter.setSigningKey("secret");
+
+        return converter;
+
+    }
+
+    @Bean
+    @Primary
+    public DefaultTokenServices tokenService() {
+
+        DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+        defaultTokenServices.setTokenStore(tokenStore());
+        defaultTokenServices.setSupportRefreshToken(true);
+
+        return defaultTokenServices;
+
+    }
+
+    @Bean
     protected AuthorizationCodeServices authorizationCodeServices() {
+
         return new JdbcAuthorizationCodeServices(dataSource);
+
     }
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
+
         oauthServer.checkTokenAccess("permitAll()");
+
     }
 
 
